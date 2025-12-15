@@ -1,0 +1,16 @@
+.navbarMain{
+  position: fixed;
+  bottom: 0%;
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 15px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+}
+.linkNavbar{
+    color: rgba(0, 0, 0, 0.548);
+}
