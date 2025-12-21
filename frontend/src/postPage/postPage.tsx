@@ -7,7 +7,6 @@ import { useAtom } from 'jotai'
 import { currentUserAtom } from '../api/globals'
 
 export function PostPage() {
-  const [text, setText] = useState("");
   const [photoUrl, setPhotoUrl] = useState("")
   const [currentUser] = useAtom(currentUserAtom)
 
@@ -17,6 +16,7 @@ export function PostPage() {
     }catch(err){
       console.error('cant post shit',err)
     }
+    setPhotoUrl('')
 
   }
   return (
