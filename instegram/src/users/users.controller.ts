@@ -15,6 +15,7 @@ export class UsersController {
     @Get(':userName/:currentUser')// give us profile detailes, post and likes
     getProfileInfo(@Param('userName') userName:  string, @Param('currentUser') currentUser :  string){
         return this.usersService.getProfileInfo(userName,currentUser)
+
     }
 
     

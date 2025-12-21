@@ -1,7 +1,7 @@
 const POST_API_URL = 'http://localhost:3001/posts';
 
 export const findAllExceptMyPost = async (userName: string)=> {
-    console.log('in trying')
+    console.log(`${POST_API_URL}/${userName}`)
     const response = await fetch(`${POST_API_URL}/${userName}`,{
         method : 'GET'
     });

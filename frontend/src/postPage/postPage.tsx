@@ -1,16 +1,19 @@
 import './postPage.css'
-import { useState } from "react";
-import { Navbar } from '../navbar/navbar'
-import { TopBar } from '../filterTopBar/topBar'
-import { postImage } from '../api/postsAPI';
-import { GLOBAL_CURRENT_USER } from '../api/globals';
+import { useState } from "react"
+import { Navbar } from '../navbars/buttom-navbar/navbar'
+import { TopBar } from '../navbars/top-navbar/topBar'
+import { postImage } from '../api/postsAPI'
+import { useAtom } from 'jotai'
+import { currentUserAtom } from '../api/globals'
 
 export function PostPage() {
-  const [photoUrl, setPhotoUrl] = useState("");
+  const [text, setText] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("")
+  const [currentUser] = useAtom(currentUserAtom)
 
   const createpost = (photoSrc: string)=>{
     try{
-      postImage(photoSrc,GLOBAL_CURRENT_USER);
+      postImage(photoSrc,currentUser);
     }catch(err){
       console.error('cant post shit',err)
     }

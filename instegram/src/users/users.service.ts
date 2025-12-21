@@ -54,7 +54,7 @@ export class UsersService {
 
 
         const didUserLikeIds = didUserLike.map(like => like.postId);
-        
+        console.log(didUserLikeIds)
         //unit everything under one JSON
         const response = (await posts).map(post=>({
             id: post.id,
@@ -66,6 +66,7 @@ export class UsersService {
             meLike: didUserLikeIds.includes(post.id),
 
         }))
+        // console.log(response)
         return response
     }
 
