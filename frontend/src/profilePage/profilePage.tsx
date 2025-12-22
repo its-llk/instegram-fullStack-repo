@@ -17,7 +17,6 @@ const {data: userProfilePosts,isLoading} = useQuery({
      queryFn: () => getProfileInfo(userId!,currentUser),
      queryKey: ['getProfileUser'],
   })
-  console.log(userProfilePosts )
   
 
   return (

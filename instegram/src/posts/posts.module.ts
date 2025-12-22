@@ -5,12 +5,13 @@ import { Posts } from 'src/database/postsEntity';
 import { Likes } from 'src/database/likesEntity';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
+import { DBUtil } from 'src/database/db-util';
 
 @Module({  
     imports: [
     TypeOrmModule.forFeature([Users, Posts, Likes])  // ← חובה!!
     ],
     controllers:[PostsController],
-    providers:[PostsService]
+    providers:[PostsService, DBUtil]
 })
 export class PostsModule {}

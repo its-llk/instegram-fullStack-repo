@@ -1,95 +1,63 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Console } from 'console';
-import { response } from 'express';
-import { Likes } from 'src/database/likesEntity';
-import { Posts } from 'src/database/postsEntity';
-import { Users } from 'src/database/usersEntity';
-import { In, Not, Repository } from 'typeorm';
-
+import { DBUtil } from '../database/db-util';
+import { ImageToPostDto, LikeChangeDto, PhotoId } from 'src/dto/postDto';
+import { UserDto } from 'src/dto/userDto';
+import { FindAllExceptMyPost, PostImage } from 'src/dto/outputDto';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class PostsService {
+  constructor(private readonly dbutil: DBUtil) {}
 
-            constructor(
-            @InjectRepository(Users)
-            private userRepo: Repository<Users>,
+  async findAllExceptMyPosy(userdto : UserDto    
+  ):Promise<FindAllExceptMyPost[]>{
+    // fetch posts
+    const posts = await this.dbutil.findAllPostsExceptUser(userdto.userName);
+    const postsIds = posts.map((p) => p.id);
     
-            @InjectRepository(Posts)
-            private postRepo: Repository<Posts>,
-                    
-            @InjectRepository(Likes)
-            private likeRepo: Repository<Likes>,
-        ){}
-
-   async findAllExceptMyPosy(userName : string){
-
-        //find all posts of all withouth the user name
-        const posts = await this.postRepo
-        .createQueryBuilder('post')
-        .leftJoinAndSelect('post.user', 'user')
-        .where('post.userName != :userName', { userName})
-        .getMany();
-        
-        const postsIds = posts.map(post => post.id);
-
-        //liek group by posts
-        const sumLikes = await this.likeRepo
-        .createQueryBuilder('likes')
-        .select('likes.postId', 'postId')
-        .addSelect('COUNT(*)', 'numOfLikes')
-        .where('likes.postId IN (:...postsIds)', { postsIds})
-        .groupBy('likes.postId')
-        .getRawMany();
-        
-        const likesMap = sumLikes.reduce((acc, curr) => {
-        acc[curr.postId] = Number(curr.numOfLikes);
+    // fetch likes
+    const likesSum = await this.dbutil.countLikesForPosts(postsIds);
+    const likesMap = likesSum.reduce((acc, curr) => {
+        acc[curr.postId] = Number(curr.numOfLikes)
         return acc;
         }, {} as Record<number, number>);
+    // fetch posts liked by current user
+    const didUserLike = await this.dbutil.findPostsLikedByUser(userdto.userName);
+    
+    const didUserLikeIds = didUserLike.map(like => like.postId);
 
-        //find if the current user did like or didnt each posts already
-        const didUserLike = await this.likeRepo
-        .createQueryBuilder('like')
-        .select('like.postId', 'postId')
-        .where('like.userName = :userName', { userName})
-        .getRawMany();
+    // assemble final response
+    const response:FindAllExceptMyPost[] = posts.map((post) => ({
+      id: post.id,
+      userName: post.userName,
+      profileUrl: post.user.avatarSrc,
+      postImg: post.photoSrc,
+      createdDate: new Date(post.createdAt).toLocaleDateString(),
+      likes: likesMap[post.id] ?? 0,
+      meLike: didUserLikeIds.includes(post.id),
+    }));
+    return response
+  }
 
-        const didUserLikeIds = didUserLike.map(like => like.postId);
-        
-        //unit everything under one JSON
-        const response = (await posts).map(post=>({
-            id: post.id,
-            userName: post.userName,
-            profileUrl: post.user.avatarSrc ,
-           postImg: post.photoSrc,
-            createdDate: new Date(post.createdAt).toLocaleDateString(),
-            likes: likesMap[post.id]?? 0,
-            meLike: didUserLikeIds.includes(post.id),
+  async postImage(imgToPost: ImageToPostDto
+      ):Promise<PostImage>{
+     const imageData = this.dbutil.savePost(imgToPost.photoSrc, imgToPost.userName);
+     return new PostImage((await imageData).photoSrc)
+  }
 
-        }))
-        return response
-    }
+  async deleteImage(photoId: PhotoId
+      ):Promise<DeleteResult>{
+     return this.dbutil.deletePost(photoId.postId);
+  }
+  
+  async postLike(likeChangeDto:LikeChangeDto
+    ):Promise<LikeChangeDto>{
+    return this.dbutil.saveLike(likeChangeDto.postId, likeChangeDto.userName);
+  }
 
-    async postImage(imgToPost : {photoSrc : string, userName: string}){
+  async removeLike(likeChangeDto:LikeChangeDto
+    ):Promise<DeleteResult>{
+    return this.dbutil.deleteLike(likeChangeDto.postId, likeChangeDto.userName);
+  }
 
-        return await this.postRepo.save({
-        photoSrc: imgToPost.photoSrc,
-        userName: imgToPost.userName,
-        });
-    }
-
-    async postLike(postId : number, userName:string){
-        return this.likeRepo.save({
-            postId: postId,
-            userName: userName
-        })
-    }
-
-    async removeLike(postId : number, userName:string){
-        return this.likeRepo.delete({
-            postId:  postId,
-            userName: userName
-        })
-
-    }
 }

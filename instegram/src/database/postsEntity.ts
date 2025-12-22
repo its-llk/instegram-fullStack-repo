@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, M
 import { Users } from './usersEntity';
 import { Likes } from './likesEntity';
 
-@Entity('posts')
 
 @Entity('posts')
 export class Posts {

@@ -1,3 +1,4 @@
+
 const POST_API_URL = 'http://localhost:3001/posts';
 
 export const findAllExceptMyPost = async (userName: string)=> {
@@ -21,7 +22,6 @@ export const postImage = async (photoSrc : string, userName: string)=> {
         body: JSON.stringify({photoSrc,userName}),
     });
     if (!response.ok){
-        console.log(response);
     throw new Error('Failed to fetch users');
     }
     return response.json();
@@ -33,7 +33,6 @@ export const postLike = async (postId: number ,userName : string )=> {
         method: 'POST',
     });
     if (!response.ok){
-        console.log(response);
     throw new Error('Failed to fetch users');
     }
     return response.json();
@@ -42,6 +41,16 @@ export const postLike = async (postId: number ,userName : string )=> {
 export const deleteLike = async (postId: number ,userName : string )=> {
 
     const response = await fetch(`${POST_API_URL}/${postId}/${userName}`,{
+        method: 'DELETE',
+    });
+    if (!response.ok){
+    throw new Error('Failed to fetch users');
+    }
+    return response.json();
+};
+export const deletePost = async (postId: number)=> {
+    console.log(`${POST_API_URL}/${postId}`);
+    const response = await fetch(`${POST_API_URL}/${postId}`,{
         method: 'DELETE',
     });
     if (!response.ok){

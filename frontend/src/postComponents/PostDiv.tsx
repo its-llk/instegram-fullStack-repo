@@ -8,7 +8,6 @@ interface PostDivProps{
 };
 
 export function PostDiv({ posts }: PostDivProps) {
-  console.log( posts)
   return (
     <div className="container">
       

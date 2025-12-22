@@ -5,11 +5,11 @@ import { AiFillHome, AiOutlinePlusCircle  } from 'react-icons/ai';
 import { getProfilepicture } from '../../api/userAPI';
 import { useAtom } from 'jotai';
 import { currentUserAtom } from '../../api/globals';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function Navbar() {
   const [currentUser/*, setCurrentUser*/] = useAtom(currentUserAtom)
-
+  const queryClient = useQueryClient();
 
     //when page gets renderd
   const { data: currentUserprofileUrl, isLoading } = useQuery({
@@ -18,8 +18,15 @@ export function Navbar() {
   })
   const profileUrl = isLoading 
     ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-udL_-Me4EZSeIPL_RFegnzJ6a9WKGLP2YQ&s'
-    : currentUserprofileUrl
+    : currentUserprofileUrl.profileUrl
 
+  const renderProfileInfo = () => {
+    setTimeout(() => {
+      queryClient.invalidateQueries({
+        queryKey: ['getProfileUser'],
+      });
+    }, 100);
+  }
 
 
   return (
@@ -32,8 +39,8 @@ export function Navbar() {
         <AiOutlinePlusCircle size={45}/>
         </Link>
         <Link 
-         to={isLoading ?   'http://localhost:5173/' : `/profilePage/${currentUser}/${currentUserprofileUrl}` }
-        className='linkNavbar'>
+         to={isLoading ?   'http://localhost:5173/' : `/profilePage/${currentUser}/${currentUserprofileUrl.profileUrl}` }
+        className='linkNavbar' onClick={renderProfileInfo}>
         <img
         src={ profileUrl }
         alt="Profile"
