@@ -1,8 +1,3 @@
-import { atom } from 'jotai';
-
-
-export const currentUserAtom = atom('eden_pancake')
-
 export type Post = {
   id: number;
   userName: string;

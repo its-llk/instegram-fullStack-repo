@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
 
 export class FindAllExceptMyPost {
 
@@ -24,6 +24,7 @@ export class FindAllExceptMyPost {
 
   @IsNumber()
   @IsNotEmpty()
+  @IsPositive()
   likes: number;
 
   @IsBoolean()

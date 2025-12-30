@@ -1,7 +1,6 @@
-// src/posts/posts.repository.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In, Not} from 'typeorm';
+import { Repository, In, Not } from 'typeorm';
 import { Likes } from 'src/database/likesEntity';
 import { Posts } from 'src/database/postsEntity';
 import { Users } from 'src/database/usersEntity';
@@ -27,16 +26,15 @@ export class DBUtil {
     //   .where('post.userName != :userName', { userName })
     //   .getMany();
     return this.postRepo.find({
-        relations: {
-            user: true,
+      relations: {
+        user: true,
+      },
+      where: {
+        user: {
+          name: Not(userName),
         },
-        where: {
-            user: {
-                name: Not(userName)
-        
-            },
-        },
-    })
+      },
+    });
   }
 
   async findAllPostsOfUser(userName: string) {
@@ -47,16 +45,15 @@ export class DBUtil {
     //   .getMany();
 
     return this.postRepo.find({
-        relations: {
-            user: true,
+      relations: {
+        user: true,
+      },
+      where: {
+        user: {
+          name: userName,
         },
-        where: {
-            user: {
-                name: userName
-        
-            },
-        },
-    })
+      },
+    });
   }
 
   // count likes for posts
@@ -78,16 +75,16 @@ export class DBUtil {
     //   .where('like.userName = :userName', { userName })
     //   .getRawMany();
 
-      const didUserLike = await this.likeRepo.find({
-        select: {
-            postId: true,
-        },
-        where: {
-            userName: userName,
-        },
-    })
+    const didUserLike = await this.likeRepo.find({
+      select: {
+        postId: true,
+      },
+      where: {
+        userName: userName,
+      },
+    });
 
-    return didUserLike//.map((like) => like.postId);
+    return didUserLike; //.map((like) => like.postId);
   }
 
   // save a new post
@@ -106,8 +103,9 @@ export class DBUtil {
   async deleteLike(postId: number, userName: string) {
     return this.likeRepo.delete({ postId, userName });
   }
+
   async getProfileUrl(userName: string) {
     console.log('DataSource initialized:');
-    return this.userRepo.findOne({where: {name: userName}})
+    return this.userRepo.findOne({ where: { name: userName } });
   }
 }

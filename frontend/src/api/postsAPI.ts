@@ -1,61 +1,63 @@
+const POST_API_URL = "http://localhost:3001/posts";
 
-const POST_API_URL = 'http://localhost:3001/posts';
-
-export const findAllExceptMyPost = async (userName: string)=> {
-    console.log(`${POST_API_URL}/${userName}`)
-    const response = await fetch(`${POST_API_URL}/${userName}`,{
-        method : 'GET'
-    });
-    if (!response.ok){
-        console.log(response);
-    throw new Error('Failed to fetch users');
-    }
-    console.log(response.json)
-    return response.json();
+export const findAllExceptMyPost = async (userName: string) => {
+  console.log(`${POST_API_URL}/${userName}`);
+  const response = await fetch(`${POST_API_URL}/${userName}`, {
+    method: "GET",
+  });
+  if (!response.ok) {
+    console.log(response);
+    throw new Error("Failed to fetch users");
+  }
+  console.log(response.json);
+  return response.json();
 };
 
-export const postImage = async (photoSrc : string, userName: string)=> {
-
-    const response = await fetch(POST_API_URL,{
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({photoSrc,userName}),
-    });
-    if (!response.ok){
-    throw new Error('Failed to fetch users');
-    }
-    return response.json();
+export const postImage = async (photoSrc: string, userName: string) => {
+  const response = await fetch(`${POST_API_URL}/uploadImage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ photoSrc, userName }),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch users");
+  }
+  return response.json();
 };
 
-export const postLike = async (postId: number ,userName : string )=> {
-
-    const response = await fetch(`${POST_API_URL}/${postId}/${userName}`,{
-        method: 'POST',
-    });
-    if (!response.ok){
-    throw new Error('Failed to fetch users');
+export const postLike = async (postId: number, userName: string) => {
+  const response = await fetch(
+    `${POST_API_URL}/postLike/${postId}/${userName}`,
+    {
+      method: "POST",
     }
-    return response.json();
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch users");
+  }
+  return response.json();
 };
 
-export const deleteLike = async (postId: number ,userName : string )=> {
-
-    const response = await fetch(`${POST_API_URL}/${postId}/${userName}`,{
-        method: 'DELETE',
-    });
-    if (!response.ok){
-    throw new Error('Failed to fetch users');
+export const deleteLike = async (postId: number, userName: string) => {
+  const response = await fetch(
+    `${POST_API_URL}/deleteLike/${postId}/${userName}`,
+    {
+      method: "DELETE",
     }
-    return response.json();
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch users");
+  }
+  return response.json();
 };
-export const deletePost = async (postId: number)=> {
-    console.log(`${POST_API_URL}/${postId}`);
-    const response = await fetch(`${POST_API_URL}/${postId}`,{
-        method: 'DELETE',
-    });
-    if (!response.ok){
-        console.log(response);
-    throw new Error('Failed to fetch users');
-    }
-    return response.json();
+export const deletePost = async (postId: number) => {
+  console.log(`${POST_API_URL}/${postId}`);
+  const response = await fetch(`${POST_API_URL}/deletePost/${postId}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    console.log(response);
+    throw new Error("Failed to fetch users");
+  }
+  return response.json();
 };
