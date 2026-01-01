@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PostsDBUtil } from './posts-dbUtils';
 import { ImageToPostDto, LikeChangeDto, PhotoId } from './postDto';
 import { UserDto } from 'src/users/userDto';
@@ -14,7 +18,7 @@ export class PostsService {
     //find user exist
     const findUser = await this.postsDBUtil.findUserExistLike(userdto.userName);
     if (!findUser) {
-      throw new Error(err.USER_NOT_FOUND);
+      throw new NotFoundException(err.USER_NOT_FOUND);
     }
 
     // fetch posts
@@ -54,11 +58,12 @@ export class PostsService {
 
   async postImage(imgToPost: ImageToPostDto): Promise<string> {
     // find user exist
+    throw new NotFoundException(err.USER_NOT_FOUND);
     const findUser = await this.postsDBUtil.findUserExistLike(
       imgToPost.userName,
     );
     if (!findUser) {
-      return err.USER_NOT_FOUND;
+      throw new NotFoundException(err.USER_NOT_FOUND);
     }
 
     // save post
@@ -69,14 +74,14 @@ export class PostsService {
     if (imageData) {
       return err.success;
     }
-    return err.saveFailed;
+    throw new InternalServerErrorException(err.saveFailed);
   }
 
   async deleteImage(photoId: PhotoId): Promise<string> {
     // check if post exists
     const findPost = await this.postsDBUtil.findPost(photoId.postId);
     if (!findPost) {
-      return err.POST_NOT_FOUND;
+      throw new NotFoundException(err.POST_NOT_FOUND);
     }
 
     // delete post
@@ -84,7 +89,7 @@ export class PostsService {
     if (result.affected) {
       return err.success;
     }
-    return err.deleteFailed;
+    throw new InternalServerErrorException(err.saveFailed);
   }
 
   async postLike(likeChangeDto: LikeChangeDto): Promise<string> {
@@ -93,13 +98,13 @@ export class PostsService {
       likeChangeDto.userName,
     );
     if (!findUser) {
-      return err.USER_NOT_FOUND;
+      throw new NotFoundException(err.USER_NOT_FOUND);
     }
 
     // check if post exists
     const findPost = await this.postsDBUtil.findPost(likeChangeDto.postId);
     if (!findPost) {
-      return err.POST_NOT_FOUND;
+      throw new NotFoundException(err.POST_NOT_FOUND);
     }
 
     // save like
@@ -110,7 +115,7 @@ export class PostsService {
     if (result) {
       return err.success;
     }
-    return err.saveFailed;
+    throw new InternalServerErrorException(err.saveFailed);
   }
 
   async removeLike(likeChangeDto: LikeChangeDto): Promise<string> {
@@ -119,13 +124,13 @@ export class PostsService {
       likeChangeDto.userName,
     );
     if (!findUser) {
-      return err.USER_NOT_FOUND;
+      throw new NotFoundException(err.USER_NOT_FOUND);
     }
 
     // check if post exists
     const findPost = await this.postsDBUtil.findPost(likeChangeDto.postId);
     if (!findPost) {
-      return err.POST_NOT_FOUND;
+      throw new NotFoundException(err.POST_NOT_FOUND);
     }
 
     // delete like
@@ -136,6 +141,6 @@ export class PostsService {
     if (result.affected) {
       return err.success;
     }
-    return err.deleteFailed;
+    throw new InternalServerErrorException(err.saveFailed);
   }
 }

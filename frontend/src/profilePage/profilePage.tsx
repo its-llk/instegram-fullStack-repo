@@ -4,9 +4,9 @@ import { TopBar } from "../navbars/top-navbar/topBar";
 import { useParams } from "react-router-dom";
 import { useAtom } from "jotai";
 import { currentUserAtom } from "../api/atoms";
-import { getProfileInfo } from "../api/userAPI";
 import { PostDiv } from "../postComponents/PostDiv";
-import { useQuery } from "@tanstack/react-query";
+import { useFindAllMyPosts } from "../hooks/useFindAllMyPosts";
+import { ErrorPopUp } from "../errorPopUp/errorPopUp";
 
 export function ProfilePage() {
   const { userId, "*": profileUrl } = useParams<{
@@ -14,11 +14,12 @@ export function ProfilePage() {
     "*": string;
   }>();
   const [currentUser] = useAtom(currentUserAtom);
-
-  const { data: userProfilePosts, isLoading } = useQuery({
-    queryFn: () => getProfileInfo(userId!, currentUser),
-    queryKey: ["getProfileUser"],
-  });
+  const {
+    data: userProfilePosts,
+    isLoading,
+    isSuccess,
+    error,
+  } = useFindAllMyPosts(userId!, currentUser);
 
   return (
     <>
@@ -27,8 +28,12 @@ export function ProfilePage() {
         <img src={profileUrl} alt={userId} className="image-header-profile" />
         <strong>{userId}</strong>
       </div>
-      {!isLoading && <PostDiv posts={userProfilePosts} />}
-      {isLoading && <div>is still loading...</div>}
+
+      {isLoading && <div>is loading....</div>}
+      {!isLoading && error && <ErrorPopUp message={error.message} />}
+      {!isLoading && !error && isSuccess && (
+        <PostDiv posts={userProfilePosts} />
+      )}
 
       <Navbar />
     </>

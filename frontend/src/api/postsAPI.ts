@@ -6,10 +6,12 @@ export const findAllExceptMyPost = async (userName: string) => {
     method: "GET",
   });
   if (!response.ok) {
-    console.log(response);
-    throw new Error("Failed to fetch users");
+    const data = await response.json();
+    throw {
+      status: response.status,
+      message: data.message,
+    };
   }
-  console.log(response.json);
   return response.json();
 };
 
@@ -20,7 +22,11 @@ export const postImage = async (photoSrc: string, userName: string) => {
     body: JSON.stringify({ photoSrc, userName }),
   });
   if (!response.ok) {
-    throw new Error("Failed to fetch users");
+    const data = await response.json();
+    throw {
+      status: response.status,
+      message: data.message,
+    };
   }
   return response.json();
 };
@@ -33,7 +39,11 @@ export const postLike = async (postId: number, userName: string) => {
     }
   );
   if (!response.ok) {
-    throw new Error("Failed to fetch users");
+    const data = await response.json();
+    throw {
+      status: response.status,
+      message: data.message,
+    };
   }
   return response.json();
 };
@@ -46,7 +56,11 @@ export const deleteLike = async (postId: number, userName: string) => {
     }
   );
   if (!response.ok) {
-    throw new Error("Failed to fetch users");
+    const data = await response.json();
+    throw {
+      status: response.status,
+      message: data.message,
+    };
   }
   return response.json();
 };
@@ -56,8 +70,11 @@ export const deletePost = async (postId: number) => {
     method: "DELETE",
   });
   if (!response.ok) {
-    console.log(response);
-    throw new Error("Failed to fetch users");
+    const data = await response.json();
+    throw {
+      status: response.status,
+      message: data.message,
+    };
   }
   return response.json();
 };

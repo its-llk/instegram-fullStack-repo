@@ -3,11 +3,13 @@ import { useState } from "react";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { deleteLike, deletePost, postLike } from "../../api/postsAPI";
 import { currentUserAtom } from "../../api/atoms";
 import { useAtom } from "jotai";
 import { useQueryClient } from "@tanstack/react-query";
 import { IconContext } from "react-icons";
+import { useDeletePost } from "../../hooks/useDeletePost";
+import { useDeleteLike } from "../../hooks/useRemoveLike";
+import { useAddLike } from "../../hooks/useAddLike";
 
 interface PostComponentsPropms {
   postId: number;
@@ -24,27 +26,33 @@ export function PostComponents(promps: PostComponentsPropms) {
   const [likeCount, setLikeCount] = useState(promps.likes);
   const [currentUser] = useAtom(currentUserAtom);
   const queryClient = useQueryClient();
+  const { mutate: deletePostMutation } = useDeletePost(promps.postId);
+  const { mutate: deleteLikeMutation } = useDeleteLike(
+    promps.postId,
+    promps.userName
+  );
+  const { mutate: addLikeMutation } = useAddLike(
+    promps.postId,
+    promps.userName
+  );
+
   const deleteThePost = () => {
-    try {
-      console.log("delete Post");
-      deletePost(promps.postId);
-    } catch (err) {
-      console.error("cant make like", err);
-    }
+    deletePostMutation();
     setTimeout(() => {
       queryClient.invalidateQueries({
         queryKey: ["getProfileUser"],
       });
     }, 100);
   };
+
   const toggleLike = () => {
     try {
       if (liked === false) {
         console.log("postLike");
-        postLike(promps.postId, currentUser);
+        addLikeMutation();
       } else {
         console.log("deleteLike");
-        deleteLike(promps.postId, currentUser);
+        deleteLikeMutation();
       }
       setLiked(!liked);
     } catch (err) {

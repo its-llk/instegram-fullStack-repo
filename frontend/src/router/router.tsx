@@ -8,7 +8,7 @@ export const instegramRouter = createBrowserRouter([
   {
     path: "/",
     element: <HomePage />,
-    errorElement: <NotFoundPage />,
+    // errorElement: <NotFoundPage*/ />,
   },
   {
     path: "/postPage",

@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { UsersDbUtils } from './users-dbUtils';
 import { UserDto, UserOtherUserDto } from './userDto';
-import { FindAllExceptMyPost, UrlDto } from 'src/dto/outputDto';
+import { UrlDto } from 'src/dto/outputDto';
 import { returnPost } from 'src/globals/types';
+import { err } from 'src/globals/types';
 
 @Injectable()
 export class UsersService {
@@ -17,7 +18,7 @@ export class UsersService {
       userOtherUserDto.userName,
     );
     if (!findUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(err.USER_NOT_FOUND);
     }
     //find all posts of all withouth the user name
     const posts = await this.usersDbUtils.findAllPostsOfUser(
@@ -61,7 +62,9 @@ export class UsersService {
     const userPictureUrl = await this.usersDbUtils.getProfileUrl(
       userDto.userName,
     );
-    if (!userPictureUrl) throw new NotFoundException('User not found');
+    if (!userPictureUrl) {
+      throw new NotFoundException(err.USER_NOT_FOUND);
+    }
     return new UrlDto(userPictureUrl.avatarSrc);
   }
 }

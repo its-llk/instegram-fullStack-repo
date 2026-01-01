@@ -1,0 +1,34 @@
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.popup {
+  position: relative;
+  background: white;
+  padding: 24px 20px;
+  border-radius: 12px;
+  width: 350px;
+  height: 350px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center; /* מרכז את הטקסט */
+}
+
+.popup-message {
+  margin-top: 40%; /* נותן רווח מהכפתור */
+}
+
+.popup-close {
+  position: absolute;
+  top: 12px;
+  left: 12px; /* משמאל */
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
