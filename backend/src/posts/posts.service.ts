@@ -58,7 +58,6 @@ export class PostsService {
 
   async postImage(imgToPost: ImageToPostDto): Promise<string> {
     // find user exist
-    throw new NotFoundException(err.USER_NOT_FOUND);
     const findUser = await this.postsDBUtil.findUserExistLike(
       imgToPost.userName,
     );

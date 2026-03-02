@@ -1,16 +1,15 @@
 import "./navbar.css";
 import { Link } from "react-router-dom";
 import { AiFillHome, AiOutlinePlusCircle } from "react-icons/ai";
-import { getProfilepicture } from "../../api/userAPI";
+import { getProfilepicture } from "../../../api/userAPI";
 import { useAtom } from "jotai";
-import { currentUserAtom } from "../../api/atoms";
+import { currentUserAtom } from "../../../stores/atoms";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function Navbar() {
   const [currentUser] = useAtom(currentUserAtom);
   const queryClient = useQueryClient();
 
-  //when page gets renderd
   const { data: currentUserprofileUrl, isLoading } = useQuery({
     queryFn: () => getProfilepicture(currentUser),
     queryKey: ["userHasChanged"],
@@ -19,31 +18,22 @@ export function Navbar() {
     ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-udL_-Me4EZSeIPL_RFegnzJ6a9WKGLP2YQ&s"
     : currentUserprofileUrl.profileUrl;
 
-  const renderProfileInfo = () => {
-    setTimeout(() => {
-      queryClient.invalidateQueries({
-        queryKey: ["getProfileUser"],
-      });
-    }, 100);
-  };
-
   return (
     <>
       <div className="navbarMain">
         <Link to="/" className="linkNavbar">
           <AiFillHome size={45} />
         </Link>
-        <Link to="/postPage" className="linkNavbar">
+        <Link to="/PostPage" className="linkNavbar">
           <AiOutlinePlusCircle size={45} />
         </Link>
         <Link
           to={
             isLoading
-              ? `/profilePage/${currentUser}/${"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-udL_-Me4EZSeIPL_RFegnzJ6a9WKGLP2YQ&s"}`
-              : `/profilePage/${currentUser}/${currentUserprofileUrl.profileUrl}`
+              ? `/ProfilePage/${currentUser}/${"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-udL_-Me4EZSeIPL_RFegnzJ6a9WKGLP2YQ&s"}`
+              : `/ProfilePage/${currentUser}/${currentUserprofileUrl.profileUrl}`
           }
           className="linkNavbar"
-          onClick={renderProfileInfo}
         >
           <img
             src={profileUrl}

@@ -1,12 +1,12 @@
 const POST_API_URL = "http://localhost:3001/posts";
 
 export const findAllExceptMyPost = async (userName: string) => {
-  console.log(`${POST_API_URL}/${userName}`);
   const response = await fetch(`${POST_API_URL}/${userName}`, {
     method: "GET",
   });
   if (!response.ok) {
     const data = await response.json();
+    console.log("Error response data:", data);
     throw {
       status: response.status,
       message: data.message,
@@ -36,7 +36,7 @@ export const postLike = async (postId: number, userName: string) => {
     `${POST_API_URL}/postLike/${postId}/${userName}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!response.ok) {
     const data = await response.json();
@@ -53,7 +53,7 @@ export const deleteLike = async (postId: number, userName: string) => {
     `${POST_API_URL}/deleteLike/${postId}/${userName}`,
     {
       method: "DELETE",
-    }
+    },
   );
   if (!response.ok) {
     const data = await response.json();
@@ -65,12 +65,12 @@ export const deleteLike = async (postId: number, userName: string) => {
   return response.json();
 };
 export const deletePost = async (postId: number) => {
-  console.log(`${POST_API_URL}/${postId}`);
   const response = await fetch(`${POST_API_URL}/deletePost/${postId}`, {
     method: "DELETE",
   });
   if (!response.ok) {
     const data = await response.json();
+    console.log("Error response data:", data);
     throw {
       status: response.status,
       message: data.message,

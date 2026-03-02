@@ -105,7 +105,6 @@ export class DBUtil {
   }
 
   async getProfileUrl(userName: string) {
-    console.log('DataSource initialized:');
     return this.userRepo.findOne({ where: { name: userName } });
   }
 }

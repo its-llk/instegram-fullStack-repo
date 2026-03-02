@@ -8,16 +8,9 @@ import { returnPost } from 'src/globals/types';
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
-  @Get(':userName') // get all posts for HomePage
-  async findAllExceptMyPost(@Param() userdto: UserDto): Promise<returnPost[]> {
-    console.log('In controller');
-    const imgUserOutputDto: returnPost[] =
-      await this.postService.findAllExceptMyPosts(userdto);
-    return imgUserOutputDto;
-  }
-
-  @Post('/uploadImage') // post image
+  @Post('/uploadImage')
   async postImage(@Body() postImg: ImageToPostDto): Promise<string> {
+    console.log('fdsfsdfdsfsdfsd', postImg);
     const imageData: string = await this.postService.postImage(postImg);
     return imageData;
   }
@@ -36,5 +29,13 @@ export class PostsController {
   @Delete('deleteLike/:postId/:userName') // deleting like from post
   async removeLike(@Param() likeChangeDto: LikeChangeDto): Promise<string> {
     return await this.postService.removeLike(likeChangeDto);
+  }
+
+  @Get(':userName')
+  async findAllExceptMyPost(@Param() userdto: UserDto): Promise<returnPost[]> {
+    console.log('In controller');
+    const imgUserOutputDto: returnPost[] =
+      await this.postService.findAllExceptMyPosts(userdto);
+    return imgUserOutputDto;
   }
 }

@@ -1,11 +1,9 @@
 import "./postPage.css";
 import { useState } from "react";
-import { Navbar } from "../navbars/buttom-navbar/navbar";
-import { TopBar } from "../navbars/top-navbar/topBar";
-import { useCreatePost } from "../hooks/useCreatePost";
+import { useCreatePost } from "../../hooks/useCreatePost";
 import { useAtom } from "jotai";
-import { currentUserAtom } from "../api/atoms";
-import { ErrorPopUp } from "../errorPopUp/errorPopUp";
+import { currentUserAtom } from "../../stores/atoms";
+import { ErrorPopUp } from "../../components/errorPopUp/errorPopUp";
 
 export function PostPage() {
   const [photoUrl, setPhotoUrl] = useState("");
@@ -17,13 +15,14 @@ export function PostPage() {
   } = useCreatePost(photoUrl, currentUser);
 
   const createPostOnClick = () => {
-    setPhotoUrl("");
     createpost();
+    if (isError) {
+      console.error("cant create post", error);
+    }
+    setPhotoUrl("");
   };
   return (
     <>
-      <TopBar name="Create new post" isCreateImg />
-
       <div className="upload-container">
         <input
           type="text"
@@ -42,8 +41,6 @@ export function PostPage() {
       </div>
 
       {isError && error && <ErrorPopUp message={error.message} />}
-
-      <Navbar />
     </>
   );
 }
